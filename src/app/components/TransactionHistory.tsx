@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAccount, useChainId } from "wagmi";
 import { NETWORKS } from "@/lib/networks";
 
-type Transfer = { hash: string; blockNumber: number; token: string; from: string; to: string; value: string; type: "send" | "receive"; explorerUrl: string };
+type Transfer = { hash: string; blockNumber?: number; token: string; from?: string; to: string; value: string; type: "send" | "receive"; explorerUrl: string; local?: boolean; asset?: string };
 
 export function TransactionHistory() {
   const { address, isConnected } = useAccount();
@@ -21,7 +21,14 @@ export function TransactionHistory() {
       const res = await fetch(`/api/wallet/history?address=${address}&chainId=${chainId}`, { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "History unavailable");
-      setTransfers(json.transfers || []);
+      const onchain: Transfer[] = (json.transfers || []).map((x: Transfer) => ({ ...x, local: false }));
+      let local: Transfer[] = [];
+      try {
+        const stored = JSON.parse(localStorage.getItem(`arc-wallet-submitted-${address.toLowerCase()}`) || "[]");
+        local = stored.filter((x: any) => x.chainId === chainId).map((x: any) => ({ hash: x.hash, token: x.asset || active.symbol, to: x.recipient, value: x.amount, type: "send", explorerUrl: `${active.explorerUrl}/tx/${x.hash}`, local: true, asset: x.asset }));
+      } catch { local = []; }
+      const merged = [...local, ...onchain].filter((x, i, arr) => arr.findIndex((y) => y.hash === x.hash) === i);
+      setTransfers(merged.slice(0, 50));
     } catch (e) { setError(e instanceof Error ? e.message : "History unavailable"); }
     finally { setLoading(false); }
   };
@@ -30,7 +37,7 @@ export function TransactionHistory() {
   if (!isConnected) return null;
 
   return <section className="mb-8 rounded-2xl border border-[#ffffff10] bg-[#0c1020] p-6">
-    <div className="mb-5 flex items-center justify-between gap-4"><div><h2 className="text-xl font-bold">Transaction history</h2><p className="mt-1 text-xs text-[#5b7a99]">On-chain ERC-20 transfer activity for the connected address.</p></div><button onClick={load} disabled={loading} className="rounded-xl border border-[#ffffff12] px-3 py-2 text-xs font-bold disabled:opacity-50">{loading ? "Refreshing…" : "Refresh"}</button></div>
-    {error ? <div className="rounded-xl border border-[#ff4d6d33] bg-[#ff4d6d08] p-4 text-xs font-mono text-[#ff4d6d]">{error}</div> : transfers.length === 0 && !loading ? <div className="rounded-xl border border-[#ffffff08] bg-[#060810] p-8 text-center text-sm text-[#5b7a99]">No ERC-20 transfers found in the recent scan window on {active.name}.</div> : <div className="space-y-2">{transfers.map((tx, i) => <a key={`${tx.hash}-${i}`} href={tx.explorerUrl} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-xl border border-[#ffffff08] bg-[#060810] p-4 hover:border-[#63caff33] transition-colors"><span className={`grid h-9 w-9 place-items-center rounded-full text-sm ${tx.type === "receive" ? "bg-[#00ffa312] text-[#00ffa3]" : "bg-[#63caff12] text-[#63caff]"}`}>{tx.type === "receive" ? "↓" : "↑"}</span><span className="min-w-0 flex-1"><span className="block text-sm font-bold capitalize">{tx.type}</span><span className="block truncate text-[10px] font-mono text-[#5b7a99]">{tx.token} · block {tx.blockNumber}</span></span><span className="text-right"><span className="block max-w-[150px] truncate text-xs font-mono text-white">{tx.value}</span><span className="block text-[10px] text-[#5b7a99]">raw token units</span></span></a>)}</div>}
+    <div className="mb-5 flex items-center justify-between gap-4"><div><h2 className="text-xl font-bold">Transaction history</h2><p className="mt-1 text-xs text-[#5b7a99]">Recent token transfers plus transactions submitted from this wallet.</p></div><button onClick={load} disabled={loading} className="rounded-xl border border-[#ffffff12] px-3 py-2 text-xs font-bold disabled:opacity-50">{loading ? "Refreshing…" : "Refresh"}</button></div>
+    {error ? <div className="rounded-xl border border-[#ff4d6d33] bg-[#ff4d6d08] p-4 text-xs font-mono text-[#ff4d6d]">{error}</div> : transfers.length === 0 && !loading ? <div className="rounded-xl border border-[#ffffff08] bg-[#060810] p-8 text-center text-sm text-[#5b7a99]">No recent transfers found on {active.name}.</div> : <div className="space-y-2">{transfers.map((tx, i) => <a key={`${tx.hash}-${i}`} href={tx.explorerUrl} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-xl border border-[#ffffff08] bg-[#060810] p-4 hover:border-[#63caff33] transition-colors"><span className={`grid h-9 w-9 place-items-center rounded-full text-sm ${tx.type === "receive" ? "bg-[#00ffa312] text-[#00ffa3]" : "bg-[#63caff12] text-[#63caff]"}`}>{tx.type === "receive" ? "↓" : "↑"}</span><span className="min-w-0 flex-1"><span className="block text-sm font-bold capitalize">{tx.type}{tx.local ? " · submitted" : ""}</span><span className="block truncate text-[10px] font-mono text-[#5b7a99]">{tx.asset || tx.token} · {tx.blockNumber ? `block ${tx.blockNumber}` : "awaiting confirmation"}</span></span><span className="text-right"><span className="block max-w-[150px] truncate text-xs font-mono text-white">{tx.value}</span><span className="block text-[10px] text-[#5b7a99]">{tx.local ? "wallet submission" : "raw token units"}</span></span></a>)}</div>}
   </section>;
 }
