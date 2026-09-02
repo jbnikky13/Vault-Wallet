@@ -1,9 +1,10 @@
 import { createConfig, http } from "wagmi";
 import { defineChain } from "viem";
 
-// Arc Testnet chain definition
+// Arc Testnet is currently the primary public developer network.
+// Circle documents chain ID 5042002 and the rpc.testnet.arc.network RPC.
 export const arcTestnet = defineChain({
-  id: 480,
+  id: 5042002,
   name: "Arc Testnet",
   nativeCurrency: {
     name: "USD Coin",
@@ -12,13 +13,13 @@ export const arcTestnet = defineChain({
   },
   rpcUrls: {
     default: {
-      http: ["https://rpc.arc-testnet.circle.com"],
+      http: ["https://rpc.testnet.arc.network"],
     },
   },
   blockExplorers: {
     default: {
-      name: "Arc Explorer",
-      url: "https://explorer.arc-testnet.circle.com",
+      name: "ArcScan",
+      url: "https://testnet.arcscan.app",
     },
   },
   testnet: true,
