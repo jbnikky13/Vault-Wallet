@@ -14,7 +14,6 @@ const features = [
   { name: "Predict", path: "/predict", icon: "🎯", desc: "Prediction markets", badge: "x402", color: "#00ffa3" },
   { name: "Perpetuals", path: "/perps", icon: "⚡", desc: "Leveraged trading interface", badge: "BETA", color: "#f5c842" },
   { name: "Staking", path: "/stake", icon: "◉", desc: "Earn yield on Arc", badge: "BETA", color: "#00ffa3" },
-  { name: "NFT Marketplace", path: "/nft", icon: "◆", desc: "Buy, sell & list NFTs", badge: "MULTICHAIN", color: "#a78bfa" },
 ];
 
 export default function Dashboard() {
