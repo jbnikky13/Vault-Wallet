@@ -7,6 +7,7 @@ import { WalletOverview } from "./components/WalletOverview";
 import { NetworkPortfolio } from "./components/NetworkPortfolio";
 
 const features = [
+  { name: "Wallet", path: "/wallet", icon: "◈", desc: "Send · Receive · Tokens · Transaction history", badge: "CORE", color: "#63caff" },
   { name: "AI Agent", path: "/agent", icon: "🤖", desc: "Agent wallet + autonomous strategy", badge: "AGENT STACK", color: "#a78bfa" },
   { name: "Arc Stack", path: "/arc-stack", icon: "◈", desc: "Gateway · CCTP · Nano · Paymaster", badge: "ARC", color: "#63caff" },
   { name: "Swap", path: "/swap", icon: "⇅", desc: "Token swap across supported networks", badge: "MULTICHAIN", color: "#63caff" },
@@ -33,7 +34,7 @@ export default function Dashboard() {
         <p className="text-[#5b7a99] text-xs font-mono uppercase tracking-widest mb-2">{isConnected ? `Connected · ${address?.slice(0,6)}...${address?.slice(-4)}` : "Connect wallet to start"}</p>
         <p className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-white to-[#63caff] bg-clip-text text-transparent">Your Multichain Wallet</p>
         <p className="text-[#00ffa3] text-sm mt-2 font-mono">One EVM address · eight supported networks · live balances</p>
-        <div className="flex gap-3 mt-6 flex-wrap"><Link href="/arc-stack" className="bg-[#63caff] text-[#060810] font-bold px-6 py-2.5 rounded-xl text-sm">Open Arc Stack</Link><Link href="/agent" className="border border-[#a78bfa55] text-[#a78bfa] font-bold px-6 py-2.5 rounded-xl text-sm">Launch Agent</Link></div>
+        <div className="flex gap-3 mt-6 flex-wrap"><Link href="/wallet" className="bg-[#63caff] text-[#060810] font-bold px-6 py-2.5 rounded-xl text-sm">Open Wallet</Link><Link href="/arc-stack" className="bg-[#111827] border border-[#ffffff15] text-white font-bold px-6 py-2.5 rounded-xl text-sm">Arc Stack</Link><Link href="/agent" className="border border-[#a78bfa55] text-[#a78bfa] font-bold px-6 py-2.5 rounded-xl text-sm">Launch Agent</Link></div>
       </div>
 
       <WalletOverview />
