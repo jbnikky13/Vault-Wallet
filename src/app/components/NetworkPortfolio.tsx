@@ -2,18 +2,21 @@
 
 import { useMemo } from "react";
 import { useAccount, useBalance } from "wagmi";
+import { formatUnits } from "viem";
 import { NETWORKS } from "@/lib/networks";
 
 function NetworkBalance({ network }: { network: (typeof NETWORKS)[number] }) {
   const { address } = useAccount();
   const { data, isLoading } = useBalance({ address, chainId: network.id });
+  const formattedBalance = data ? formatUnits(data.value, data.decimals) : "0";
+
   return (
     <div className="rounded-xl border border-[#ffffff10] bg-[#060810] p-4">
       <div className="flex items-center justify-between gap-3">
         <div><p className="font-bold text-sm">{network.name}</p><p className="text-[10px] font-mono text-[#5b7a99]">{network.symbol} · {network.id}</p></div>
         <span className={`h-2 w-2 rounded-full ${network.testnet ? "bg-[#f5c842]" : "bg-[#00ffa3]"}`} />
       </div>
-      <p className="mt-3 text-xl font-black">{isLoading ? "…" : data ? Number(data.formatted).toLocaleString(undefined, { maximumFractionDigits: 6 }) : "0"} <span className="text-xs text-[#63caff]">{network.symbol}</span></p>
+      <p className="mt-3 text-xl font-black">{isLoading ? "…" : Number(formattedBalance).toLocaleString(undefined, { maximumFractionDigits: 6 })} <span className="text-xs text-[#63caff]">{network.symbol}</span></p>
     </div>
   );
 }
