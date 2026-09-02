@@ -23,17 +23,17 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row justify-between md:items-start mb-8 gap-5">
         <div>
           <h1 className="text-4xl font-black tracking-tight">ARC <span className="text-[#63caff]">Wallet</span></h1>
-          <p className="text-[#5b7a99] text-sm mt-1 font-mono">Multichain Web3 wallet · one account · multiple EVM networks</p>
+          <p className="text-[#5b7a99] text-sm mt-1 font-mono">Standalone multichain self-custody wallet · one account · multiple EVM networks</p>
         </div>
-        <div className="flex items-center gap-3 flex-wrap"><NetworkSelector /><ConnectButton /></div>
+        <div className="flex items-center gap-3 flex-wrap"><Link href="/create-wallet" className="bg-[#00ffa3] text-[#060810] font-bold px-5 py-2.5 rounded-xl text-sm">Create Wallet</Link><NetworkSelector /><ConnectButton /></div>
       </div>
 
       <div className="bg-gradient-to-br from-[#0d1f35] to-[#0a1525] border border-[#63caff33] rounded-2xl p-8 mb-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-48 h-48 bg-[#63caff08] rounded-full -translate-y-16 translate-x-16" />
-        <p className="text-[#5b7a99] text-xs font-mono uppercase tracking-widest mb-2">{isConnected ? `Connected · ${address?.slice(0,6)}...${address?.slice(-4)}` : "Connect wallet to start"}</p>
+        <p className="text-[#5b7a99] text-xs font-mono uppercase tracking-widest mb-2">{isConnected ? `Connected · ${address?.slice(0,6)}...${address?.slice(-4)}` : "Create or connect a wallet to start"}</p>
         <p className="text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-r from-white to-[#63caff] bg-clip-text text-transparent">Your Multichain Wallet</p>
         <p className="text-[#00ffa3] text-sm mt-2 font-mono">One EVM address · eight supported networks · live balances</p>
-        <div className="flex gap-3 mt-6 flex-wrap"><Link href="/wallet" className="bg-[#63caff] text-[#060810] font-bold px-6 py-2.5 rounded-xl text-sm">Open Wallet</Link><Link href="/arc-stack" className="bg-[#111827] border border-[#ffffff15] text-white font-bold px-6 py-2.5 rounded-xl text-sm">Arc Stack</Link><Link href="/agent" className="border border-[#a78bfa55] text-[#a78bfa] font-bold px-6 py-2.5 rounded-xl text-sm">Launch Agent</Link></div>
+        <div className="flex gap-3 mt-6 flex-wrap"><Link href="/create-wallet" className="bg-[#63caff] text-[#060810] font-bold px-6 py-2.5 rounded-xl text-sm">Create New Wallet</Link><Link href="/wallet" className="bg-[#111827] border border-[#ffffff15] text-white font-bold px-6 py-2.5 rounded-xl text-sm">Open Wallet</Link><Link href="/arc-stack" className="border border-[#63caff55] text-[#63caff] font-bold px-6 py-2.5 rounded-xl text-sm">Arc Stack</Link></div>
       </div>
 
       <WalletOverview />
